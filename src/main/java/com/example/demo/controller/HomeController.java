@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.model.Account;
 import com.example.demo.repository.AccountRepository;
@@ -16,10 +15,10 @@ import com.example.demo.repository.AccountRepository;
 @RequestMapping(value = HomeController.URL_INDEX)
 public class HomeController {
 	
-	private final static String URL_INDEX = "/show";
+	private final static String URL_INDEX = "/home";
 	
 	@Autowired
-    private AccountRepository accountRepository;
+    public AccountRepository accountRepository;
 	
 	
 	@GetMapping("/")
@@ -29,6 +28,6 @@ public class HomeController {
 		
 		model.addAttribute("accounts", accounts);
         
-        return "show";
+        return "home/index";
 	}
 }

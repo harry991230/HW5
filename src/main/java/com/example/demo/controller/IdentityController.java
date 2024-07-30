@@ -13,13 +13,11 @@ import com.example.demo.model.Account;
 import com.example.demo.repository.AccountRepository;
 
 @Controller
-//@RequestMapping(AccountController.URL_LOGIN)
 public class IdentityController {
 
-//    public static final String URL_LOGIN = "/login";
 
     @Autowired
-    private AccountRepository accountRepository;
+    public AccountRepository accountRepository;
 
    
 
@@ -38,11 +36,11 @@ public class IdentityController {
     	
     	String username = account.getUsername();
     	
-    	 Optional<Account> acc = accountRepository.findByUsername(username);
+    	Optional<Account> acc = accountRepository.findByUsername(username);
 
-    	if (!acc.isPresent()) {
+    	if (!acc.isEmpty()) {
         	
-        	return "redirect:/show/";
+        	return "redirect:/home/";
         }
         
         return "index";
