@@ -15,7 +15,7 @@ import com.example.demo.repository.AccountRepository;
 @RequestMapping(value = HomeController.URL_INDEX)
 public class HomeController {
 	
-	private final static String URL_INDEX = "/home";
+	public final static String URL_INDEX = "/home";
 	
 	@Autowired
     public AccountRepository accountRepository;
