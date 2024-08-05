@@ -11,18 +11,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.model.Account;
 import com.example.demo.repository.AccountRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
-@RequestMapping(value = HomeController.URL_INDEX)
+@RequestMapping(value = HomeController.URL_HOME)
 public class HomeController {
 	
-	public final static String URL_INDEX = "/home";
+	protected final static String URL_HOME = "/home";
 	
 	@Autowired
     public AccountRepository accountRepository;
 	
 	
 	@GetMapping("/")
-	public String index(Model model) {
+	public String index(HttpServletRequest request , Model model) {
 		
 		List<Account> accounts = accountRepository.findAll();
 		
