@@ -39,8 +39,8 @@ public class AuthFilter extends OncePerRequestFilter {
 	
 	@Autowired
 	private UserServiceImpl userService;
-	
-	
+
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		
@@ -60,9 +60,10 @@ public class AuthFilter extends OncePerRequestFilter {
         }
         
         if ("POST".equalsIgnoreCase(request.getMethod())) {
-    		
+        	
         	CachedBodyHttpServletRequest cachedBodyRequest = new CachedBodyHttpServletRequest(request);
-        	UserLoginRequest userLoginRequest = convertTo(cachedBodyRequest.getRequestBody());
+    		
+    		UserLoginRequest userLoginRequest = convertTo(cachedBodyRequest);
         	
         	boolean isAuth = userService.authenticateUser(userLoginRequest);
         	String username = userLoginRequest.getUsername();
@@ -74,7 +75,6 @@ public class AuthFilter extends OncePerRequestFilter {
         		return;
         		
         	} else {
-        		//TODO: i18n
         		response.sendError(HttpServletResponse.SC_FORBIDDEN, "Incorrect username or password.");
             	logger.info("user: {} {}", username, "Incorrect username or password.");
             	
@@ -86,12 +86,42 @@ public class AuthFilter extends OncePerRequestFilter {
 	}
 	
 	
-	public UserLoginRequest convertTo(String responseBody) throws JsonMappingException, JsonProcessingException {
+	public UserLoginRequest convertTo(CachedBodyHttpServletRequest cachedBodyHttpServletRequest) throws JsonMappingException, JsonProcessingException {
 		ObjectMapper obj = new ObjectMapper();
-		UserLoginRequest params = obj.readValue(responseBody, UserLoginRequest.class);
 		
-		return params;
+		UserLoginRequest userLoginRequest = new UserLoginRequest();
+		String contentType = cachedBodyHttpServletRequest.getContentType();
+		
+		if (contentType.equals("application/json")) {
+			userLoginRequest = obj.readValue(cachedBodyHttpServletRequest.getRequestBody(), UserLoginRequest.class);
+			
+		} else if (contentType.equals("application/x-www-form-urlencoded")) {
+			String queryString = cachedBodyHttpServletRequest.getRequestBody();
+			String formUsername = getValueFromQueryString(queryString, "formUsername");
+	        String formPassword = getValueFromQueryString(queryString, "formPassword");
+	        userLoginRequest.setUsername(formUsername);
+	        userLoginRequest.setPassword(formPassword);
+		}
+		
+		return userLoginRequest;
 	}
+	
+	 public String getValueFromQueryString(String queryString, String key) {
+		 
+	        String[] pairs = queryString.split("&");
+	        
+	        for (String pair : pairs) {
+	        	
+	            String[] keyValue = pair.split("=");
+	            
+	            if (keyValue.length == 2 && keyValue[0].equals(key)) {
+	            	
+	                return keyValue[1];
+	            }
+	        }
+	        
+	        return "";
+	    }
 
 	
 	 private static class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
@@ -102,10 +132,10 @@ public class AuthFilter extends OncePerRequestFilter {
 	            super(request);
 	            
 	            requestBody = new BufferedReader(
-	            					new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8)
-	            			)
-	            				.lines()
-	            				.collect(Collectors.joining("\n"));
+    					new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8)
+    			)
+				.lines()
+				.collect(Collectors.joining("\n"));
 	        }
 	
 	        public String getRequestBody() {

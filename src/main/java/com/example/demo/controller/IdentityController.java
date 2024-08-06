@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import com.example.demo.dto.UserLoginRequest;
 import com.example.demo.repository.AccountRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +27,7 @@ public class IdentityController {
     }
 
    
-    @PostMapping(value = { "/auth/login" })
+    @PostMapping(value = { "/auth/login" }, consumes = {"application/json", "application/x-www-form-urlencoded"})
     public String login() {
     	 
     	return "redirect:/home/";

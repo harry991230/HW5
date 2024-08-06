@@ -1,11 +1,9 @@
-
-
 let username;
 let password;
 let controllerUri = "/auth/login";
 let redirectUri = "/home/"
 
-$('.login-btn').on('click', function () {
+$('.ajax-btn').on('click', function () {
     username = $('#floatingUsername').val();
     password = $('#floatingPassword').val();
 
@@ -26,3 +24,8 @@ $('.login-btn').on('click', function () {
         alert(errorObj.responseJSON.message || "Unknown error occurred");
     });
 });
+
+
+$('.form-btn').on('click', function () {
+    $('#form').submit();
+})
