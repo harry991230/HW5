@@ -1,14 +1,13 @@
 body {
-    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
 }
 
+
 .form {
-    width: 300px;
+    width: 400px;
 }
 
 label {
@@ -60,3 +59,8 @@ button {
 }
 
 
+@media screen and (max-width: 1080px) {
+    .sidebar-l {
+        display: none;
+    }
+}
