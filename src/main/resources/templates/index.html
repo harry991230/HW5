@@ -5,26 +5,26 @@
     layout:decorate="~{layout.html}"
 >
 
-<title layout:fragment="title">Sign In</title>
+<th:block layout:fragment="title">Sign In</th:block>
 <head>
     <link th:href="@{/css/app.css}" rel="stylesheet" layout:fragment="css"/>
 </head>
 
 <body>
-    <div layout:fragment="content" id="content" class="row container d-flex justify-content-center">
+    <div layout:fragment="content" id="content" class="shadow-lg row container d-flex justify-content-center">
         <div class="sidebar-l col-lg-8">
             <img class="team-img" style="width: 600px; height: 480px; margin-left: 140px;" th:src="@{/images/team.png}">
         </div>
         <div class="sidebar-r col-lg-4 col-sm-12 mt-4">
-        <ul class="nav nav-tabs border-0" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="ajax-tab" data-bs-toggle="tab" data-bs-target="#ajax" type="button" role="tab" aria-controls="ajax" aria-selected="true">AJAX</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="form-tab" data-bs-toggle="tab" data-bs-target="#form" type="button" role="tab" aria-controls="form" aria-selected="false">Form Submit</button>
-            </li>
-        </ul>
         <div class="tab-content" style="float: left;" id="tabContent">
+            <ul class="nav nav-tabs border-0 d-flex justify-content-around" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="ajax-tab" data-bs-toggle="tab" data-bs-target="#ajax" type="button" role="tab" aria-controls="ajax" aria-selected="true">AJAX</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="form-tab" data-bs-toggle="tab" data-bs-target="#form" type="button" role="tab" aria-controls="form" aria-selected="false">Form Submit</button>
+                </li>
+            </ul>
         <div class="tab-pane fade show active" id="ajax" role="tabpanel" aria-labelledby="ajax-tab">
             <div class="form">
                 <div class="text-center mt-5 mb-5">
@@ -32,11 +32,11 @@
                 </div>
                 <div class="mb-3">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="floatingUsername" placeholder="Username" name="username">
+                        <input type="text" class="form-control" id="floatingUsername" placeholder="Username" name="username" required>
                         <label for="floatingUsername">使用者名稱</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" min="8" max="16">
+                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" required min="8" max="16">
                         <label for="floatingPassword">密碼</label>
                     </div>
                 </div>
@@ -58,11 +58,11 @@
                 </div>
                 <div class="mb-3">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="floatingUsername2" placeholder="Username" name="username">
+                        <input type="text" class="form-control" id="floatingUsername2" placeholder="Username" name="formUsername" required>
                         <label for="floatingUsername">使用者名稱</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="floatingPassword2" placeholder="Password" name="password" min="8" max="16">
+                        <input type="password" class="form-control" id="floatingPassword2" placeholder="Password" name="formPassword" required min="8" max="16">
                         <label for="floatingPassword">密碼</label>
                     </div>
                 </div>
