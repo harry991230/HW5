@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebFilter(urlPatterns = {"/", "/*"})
+@WebFilter(urlPatterns = {"/*"})
 @Order(0)
 @Component
 public class SessionFilter extends OncePerRequestFilter {
@@ -26,19 +26,13 @@ public class SessionFilter extends OncePerRequestFilter {
         if (requestURI.startsWith("/css/") || requestURI.startsWith("/js/") || requestURI.startsWith("/images/") || requestURI.equals("/") || requestURI.equals("/auth/login")) {
             filterChain.doFilter(request, response);
             return;
-        } 
+        }
 
         if (session == null || session.getAttribute("uName") == null) {
             response.sendRedirect("/");
             return;
-            
-        } 
-        
-        if (requestURI.equals("/")) {
-    		response.sendRedirect("/home/");
-            return;
         }
-        
+
         filterChain.doFilter(request, response);
     }
 }
