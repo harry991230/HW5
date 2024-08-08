@@ -5,6 +5,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -30,7 +32,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebFilter(urlPatterns = {"/", "/auth/login"})
+@WebFilter(urlPatterns = { "/*" })
 @Order(1)
 @Component
 public class AuthFilter extends OncePerRequestFilter {
@@ -44,35 +46,28 @@ public class AuthFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-		HttpSession session = request.getSession(true);
+		HttpSession session = request.getSession(false);
 		CachedBodyHttpServletRequest cachedBodyRequest = new CachedBodyHttpServletRequest(request);
 		String requestURI = request.getRequestURI();
 
-		if (requestURI.equals("/") && session != null && session.getAttribute("uName") != null) {
-			response.sendRedirect("/home/");
-			return;
-
-		} else if (session == null && session.getAttribute("uName") == null) {
-			return;
-		}
-
-		if ("POST".equalsIgnoreCase(request.getMethod())) {
+		if (requestURI.equals("/auth/login") && "POST".equalsIgnoreCase(request.getMethod())) {
 
 			UserLoginRequest userLoginRequest = convertTo(cachedBodyRequest);
 
 			boolean isAuth = userService.authenticateUser(userLoginRequest);
-			String username = userLoginRequest.getUsername();
 
 			if (isAuth) {
+				String username = userLoginRequest.getUsername();
 				session.setAttribute("uName", username);
 
 			} else {
+				// Navigate to 403 page
 				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Incorrect username or password.");
 				logger.info("Incorrect username or password.");
 				return;
 			}
 		}
-
+		
 		// pass
 		filterChain.doFilter(cachedBodyRequest, response);
 	}
@@ -87,32 +82,29 @@ public class AuthFilter extends OncePerRequestFilter {
 		if (contentType.equals("application/json")) {
 			userLoginRequest = obj.readValue(cachedBodyHttpServletRequest.getRequestBody(), UserLoginRequest.class);
 
-		} else if (contentType.equals("application/x-www-form-urlencoded")) {
+		}
+
+		else if (contentType.equals("application/x-www-form-urlencoded")) {
 			String queryString = cachedBodyHttpServletRequest.getRequestBody();
-			String formUsername = getValueFromQueryString(queryString, "formUsername");
-			String formPassword = getValueFromQueryString(queryString, "formPassword");
-			userLoginRequest.setUsername(formUsername);
-			userLoginRequest.setPassword(formPassword);
+			Map<String, String> params = parseFormParams(queryString);
+			userLoginRequest.setUsername(params.get("formUsername"));
+			userLoginRequest.setPassword(params.get("formPassword"));
 		}
 
 		return userLoginRequest;
 	}
 
-	public String getValueFromQueryString(String queryString, String key) {
-
-		String[] pairs = queryString.split("&");
-
-		for (String pair : pairs) {
-
-			String[] keyValue = pair.split("=");
-
-			if (keyValue.length == 2 && keyValue[0].equals(key)) {
-
-				return keyValue[1];
-			}
-		}
-
-		return "";
+	private Map<String, String> parseFormParams(String body) {
+		return body.lines()
+				.flatMap(
+						line -> Arrays.stream(line.split("&"))
+				)
+				.map(
+						param -> param.split("=")
+				)
+				.collect(
+						Collectors.toMap(param -> param[0], param -> param[1])
+				);
 	}
 
 
@@ -126,12 +118,11 @@ public class AuthFilter extends OncePerRequestFilter {
 			requestBody = new BufferedReader(
 					new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8)
 			)
-					.lines()
-					.collect(Collectors.joining("\n"));
+				.lines()
+				.collect(Collectors.joining("\n"));
 		}
 
 		public String getRequestBody() {
-
 			return requestBody;
 		}
 
