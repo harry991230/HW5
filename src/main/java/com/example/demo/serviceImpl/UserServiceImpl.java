@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import com.example.demo.AuthFilter;
+import com.example.demo.AuthenticationFilter;
 import com.example.demo.dto.UserLoginRequest;
 import com.example.demo.model.Account;
 import com.example.demo.repository.AccountRepository;

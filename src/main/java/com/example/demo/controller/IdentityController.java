@@ -22,23 +22,19 @@ public class IdentityController {
 
     @GetMapping(value = { "/", "/login" })
     public String index() {
-        
         return "index";
     }
 
    
     @PostMapping(value = { "/auth/login" }, consumes = {"application/json", "application/x-www-form-urlencoded"})
     public String login() {
-    	 
     	return "redirect:/home/";
     }
 
     
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
-    	
         request.getSession().invalidate();
-        
         return "redirect:/";
     }
 
