@@ -20,7 +20,7 @@ public class IdentityController {
 
    
 
-    @GetMapping(value = { "/", "/login" })
+    @GetMapping(value = { "/" })
     public String index() {
         return "index";
     }
@@ -37,6 +37,5 @@ public class IdentityController {
         request.getSession().invalidate();
         return "redirect:/";
     }
-
     
 }
